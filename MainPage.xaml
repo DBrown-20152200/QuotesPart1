@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DylanBrown_QuoteAppPt1.MainPage"
+             Title="QuotesPt1">
+
+    <ScrollView>
+        <VerticalStackLayout HorizontalOptions="Center">
+            <HorizontalStackLayout>
+                <Label
+                    Text="Quote: "
+                />
+                <Label
+                    WidthRequest="10"
+                />
+                <Entry                    
+                    x:Name="quoteEntry"
+                    WidthRequest="275"
+                />
+            </HorizontalStackLayout>
+
+            <Label                
+            />
+
+            <HorizontalStackLayout>
+                <Label
+                    Text="Author: "                    
+                />
+                <Label WidthRequest="10"/>
+                <Entry                    
+                    x:Name="authorEntry"
+                    WidthRequest="150"
+                />
+            </HorizontalStackLayout>
+
+            <Label/>
+
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button
+                    x:Name="EnterQuote"
+                    Text="Enter Quote"
+                    Clicked="EnterQuote_Clicked"
+                />
+                <Label WidthRequest="50"/>
+                <Button
+                    x:Name="RandomQuote"
+                    Text="Random Quote"
+                    Clicked="RandomQuote_Clicked"                    
+                />
+            </HorizontalStackLayout>
+
+            <Label
+                x:Name="randomQuoteDisplay"
+            />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
