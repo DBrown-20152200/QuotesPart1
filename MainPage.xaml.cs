@@ -6,15 +6,21 @@
     using System.Reflection;
     using System.Security.Cryptography.X509Certificates;
 
-    public class Quote
+    public class QuoteData
     {
         public string fileName = "Quotes.json";
         public List<string> quotesList = new List<string>();
 
+    public class DataModel
+    {
+
+        public string fileName = "Quotes.json";
+        public List<QuoteData> quotesList = new List<QuoteData>();
+
         public Random randomInt = new Random();
-    
-        public void save()
-        {
+
+        public void Save(string newQuote, string newAuthor)
+        {            
             var localFolder = FileSystem.Current.AppDataDirectory;
             var filePath = Path.Combine(localFolder, fileName);
             Debug.WriteLine(filePath);
@@ -24,11 +30,10 @@
             File.WriteAllText(filePath, content_json);            
         }
 
-        public void load()
+        public void Load()
         {
             var localFolder = FileSystem.Current.AppDataDirectory;
             var filePath = Path.Combine(localFolder, fileName);
-
             Debug.WriteLine(filePath);
 
             var content_json = File.ReadAllText(filePath);
@@ -41,7 +46,7 @@
             }
         }
 
-        public void enterQuote(string quote, string author)
+        public void CreateFile()
         {
             string quoteListEntry = $"{quote} - {author}";
 
@@ -52,7 +57,8 @@
     public partial class MainPage : ContentPage
     {
 
-        public Quote quote = new Quote();
+        public DataModel data = new DataModel();
+        public QuoteData quoteData = new QuoteData();
 
         public MainPage()
         {   
@@ -60,25 +66,24 @@
 
             try
             {
-                quote.load();
+                data.Load();
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"Exception caught: {e}");
-                quote.save();
-                quote.load();
+                data.CreateFile();
+                data.Load();
             }
 
         }
         private void EnterQuote_Clicked(object sender, EventArgs e)
         {
-            if (!String.IsNullOrWhiteSpace(quoteEntry.Text) || !String.IsNullOrWhiteSpace(authorEntry.Text))
+            if (!String.IsNullOrWhiteSpace(quoteEntry.Text) && !String.IsNullOrWhiteSpace(authorEntry.Text))
             {
                 string quoteText = $"\"{quoteEntry.Text}\"";
                 string author = authorEntry.Text;
 
-                quote.enterQuote(quoteText, author);
-                quote.save();
+                data.Save(quoteEntry.Text, authorEntry.Text);
 
                 quoteEntry.Text = "";
                 authorEntry.Text = "";
@@ -91,11 +96,11 @@
 
         private void RandomQuote_Clicked(object sender, EventArgs e)
         {
-            if (quote.quotesList.Count > 0)
+            if (data.quotesList.Count > 0)
             {
-                int quoteNumber = quote.randomInt.Next(quote.quotesList.Count);
-                string randomQuote = quote.quotesList[quoteNumber];
-                randomQuoteDisplay.Text = randomQuote;
+                int quoteNumber = data.randomInt.Next(data.quotesList.Count);
+                var randomQuote = data.quotesList[quoteNumber];
+                randomQuoteDisplay.Text = randomQuote.ToString();
             }
             else
             {
