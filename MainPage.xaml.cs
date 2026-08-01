@@ -8,8 +8,7 @@
 
     public class Quote
     {
-        public string fileName = "Quotes.txt";
-        public string content = "\"Hello World\"";
+        public string fileName = "Quotes.json";
         public List<string> quotesList = new List<string>();
 
         public Random randomInt = new Random();
@@ -20,9 +19,9 @@
             var filePath = Path.Combine(localFolder, fileName);
             Debug.WriteLine(filePath);
 
-            content = String.Join("\n", quotesList);
+            var content_json = JsonConvert.SerializeObject(quotesList);
 
-            File.WriteAllText(filePath, content);            
+            File.WriteAllText(filePath, content_json);            
         }
 
         public void load()
@@ -32,17 +31,20 @@
 
             Debug.WriteLine(filePath);
 
-            content = File.ReadAllText(filePath);
+            var content_json = File.ReadAllText(filePath);
+            List<string> content = JsonConvert.DeserializeObject<List<string>>(content_json);
+
             
-            if (!String.IsNullOrWhiteSpace(content))
+            if (!(content.Count() == 0))
             {
-                quotesList.Add(content);
+                quotesList = content;
             }
         }
 
         public void enterQuote(string quote, string author)
         {
             string quoteListEntry = $"{quote} - {author}";
+
             quotesList.Add(quoteListEntry);
         }
     }
