@@ -6,10 +6,23 @@
     using System.Reflection;
     using System.Security.Cryptography.X509Certificates;
 
-    public class Quote
+    public class Quotes
+    {
+        public string quote { get; set; }
+        public string author { get; set; }
+
+        public Quotes(string quote, string author)
+        {
+            this.quote = quote;
+            this.author = author;
+        }
+    }
+
+
+    public class FileData
     {
         public string fileName = "Quotes.json";
-        public List<string> quotesList = new List<string>();
+        public List<Quotes> quotesList = new List<Quotes>();
 
         public Random randomInt = new Random();
 
@@ -31,28 +44,25 @@
 
             Debug.WriteLine(filePath);
 
-            var content_json = File.ReadAllText(filePath);
-            List<string> content = JsonConvert.DeserializeObject<List<string>>(content_json);
+            string content_json = File.ReadAllText(filePath);
+            quotesList = JsonConvert.DeserializeObject<List<Quotes>>(content_json);
 
-
-            if (!(content.Count() == 0))
+            if (quotesList.Count == 0)
             {
-                quotesList = content;
+                quotesList = new List<Quotes>();
             }
         }
 
         public void EnterQuote(string quote, string author)
         {
-            string quoteListEntry = $"{quote} - {author}";
-
-            quotesList.Add(quoteListEntry);
+            quotesList.Add(new Quotes (quote, author));
         }
     }
 
     public partial class MainPage : ContentPage
     {
 
-        public Quote quote = new Quote();
+        public FileData file = new FileData();
 
         public MainPage()
         {
@@ -60,13 +70,13 @@
 
             try
             {
-                quote.Load();
+                file.Load();
             }
             catch (Exception e)
             {
                 Debug.WriteLine($"Exception caught: {e}");
-                quote.Save();
-                quote.Load();
+                file.Save();
+                file.Load();
             }
 
         }
@@ -77,8 +87,8 @@
                 string quoteText = $"\"{quoteEntry.Text}\"";
                 string author = authorEntry.Text;
 
-                quote.EnterQuote(quoteText, author);
-                quote.Save();
+                file.EnterQuote(quoteText, author);
+                file.Save();
 
                 quoteEntry.Text = "";
                 authorEntry.Text = "";
@@ -91,11 +101,13 @@
 
         private void RandomQuote_Clicked(object sender, EventArgs e)
         {
-            if (quote.quotesList.Count > 0)
+            if (file.quotesList.Count > 0)
             {
-                int quoteNumber = quote.randomInt.Next(quote.quotesList.Count);
-                string randomQuote = quote.quotesList[quoteNumber];
-                randomQuoteDisplay.Text = randomQuote;
+                int quoteNumber = file.randomInt.Next(file.quotesList.Count);
+                Quotes randomQuote = file.quotesList[quoteNumber];
+                string quoteName = randomQuote.quote;
+                string authorName = randomQuote.author;
+                randomQuoteDisplay.Text = $"{quoteName} - {authorName}";
             }
             else
             {
